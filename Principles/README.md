@@ -100,7 +100,32 @@ It's a software development methodology that focus on the behavior of the softwa
 
 5. Repeat.
 
-# ACID
+# Load Balancer
+
+Balance the load of requests between services
+
+#### Pros:
+    - Scalability
+    - Performance
+    - Availability
+
+#### Main features
+    - Health services check
+    - TLS Termination (encrypt/decrypt data transfer)
+    - DDOs security
+    - Service discovery
+
+It can be applied between services with multiple instances (user/web server, web server/app server, app server/database)
+
+# API Gateway
+
+Creates the API routes with authentication, authorization, monitoring.
+
+Centralizes the business rules.
+
+# Database Features
+
+## ACID
 
 - **[A]tomicity**: All operations in a transaction must be completed successfully, otherwise the transaction is aborted.
 
@@ -110,7 +135,7 @@ It's a software development methodology that focus on the behavior of the softwa
 
 - **[D]urability**: Once a transaction is committed, it must remain committed.
 
-# CAP Theorem
+## CAP Theorem
 
 > Brewer’s Theorem
 
@@ -123,3 +148,135 @@ It's a software development methodology that focus on the behavior of the softwa
 **Take Two.**
 
 The CAP theorem states that it is not possible to guarantee all three of the desirable properties — consistency, availability, and partition tolerance at the same time in a distributed system with data replication.
+
+## Hash Index
+
+Used on RAM, not on HDs. The random insertion by the hash function may impair data access on the HD. 
+But RAM is expensive and ephemera. For this, WAL was created.
+
+##### WAL (Write Ahead Log)
+
+Create logs for all RAM operations used by the Hash Index, then commit the changes.
+
+> Hash Index don't support Range Queries, because of it's hash function
+
+## B-Trees
+
+Storage in solid drive (HD/SSD). Most used in SQL;
+
+#### Pro ✅
+
+- No storage limit;
+- Fast reads;
+- Support for Range Queries;
+
+#### Cons ❗
+
+- Make writing worse (Balance the tree)
+
+## LSM Trees (Log-structured merge-tree)
+
+Storage in both RAM and solid drive. Best for writes and good for reads.
+
+#### Process
+
+Write data in RAM, save usign WAL.
+
+During periodic service or full RAM using B-Trees/AVL/Self-balanced tree O(1), the data is written to solid drive in Sorted Strings Tables (SSTables). O(log(N))
+
+With more data insertions, the number of SSTable increase, to solve this, **Compaction** is used, comparing the most recent data and overwriting in the result SSTable. O(N)
+
+## Replication
+
+The data can be saved across different geographic regions to reduce the latency.
+
+- Synchronous: The user waits until the data is updated across all databases, prioritizing consistency adding delay to the application;
+
+- Asynchronous: The other user can get the non-updated data.
+
+#### Single-Leader Replication
+
+- Dont have write conflicts;
+- Low throughput (data processed);
+- Single point of failure;
+
+#### Multi-Leader Replication
+
+- Many write conflicts;
+- High throughput;
+- Solution for huge geographic areas
+
+#### Leaderless Replication
+
+- Write conflicts;
+- Read with latency;
+- High availability;
+
+Uses quorum to determine the number of databases to interact with.
+
+## Sharding / Data Partitioning
+
+#### Range-based Partitioning
+
+Based in range of some discreet column (ex: A-D, E-H).
+
+Support for range-based queries but has hotspot as tradeoff.
+
+#### Hash-based Partitioning
+
+Use some hash function in a column to insert the data into separate databases.
+
+Don't support range-based queries.
+
+#### Round-robin Partitioning
+
+The first record goes to the first node, the second to the second node, and so on.
+
+#### Horizontal & Vertical partitioning
+
+- Horizontal divides the data with hash or range based smaller tables;
+- Vertical divides the columns of the tables creting extensions of the main table.
+
+There may be hotspots in some cases.
+
+> Amazon approaches: Local & Global secondary index - DynamoDB.
+
+# CDN (Content Delivery Network)
+
+Static assets regional providers.
+
+Save static data from live servers to give more performance in requests.
+
+#### Feeding
+
+- **Push**: Service knows which data is most used data, bringing it to the CDN server;
+- **Pull**: The server is fed by user experience.
+
+# Monoliths ✕ Microservices
+
+## Monolith
+
+Coupled services, but can be structured as distributed systems.
+
+#### Pro ✅
+
+- Easy first deployment (monorepo);
+- Centralized dependencies management;
+
+#### Cons ❗
+
+- Scale all structure;
+- One problem in one service can reflect in multiples services;
+
+## Microservices
+
+#### Pro ✅
+
+- Each service can be scaled individually;
+- Multirepo, for different teams;
+
+#### Cons ❗
+
+- More management in deployment
+
+> Docker + Kubernetes for orchestrate the Microservices
