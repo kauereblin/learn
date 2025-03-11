@@ -280,3 +280,28 @@ Coupled services, but can be structured as distributed systems.
 - More management in deployment
 
 > Docker + Kubernetes for orchestrate the Microservices
+
+# Event Driven
+
+> RabbitMQ, Kafka
+
+Include a Order **Topic** in the middle of the communication between Order Service and Order Processor. Ensuring that requests are processed with delay if processor crashes, or service crash and there are requests to process in the Topic.
+
+The data maybe inconsistent, because the operation is assynchronous.
+
+The scalability is better than Request Response because it doesn't need the dependency between services. It's not coupled.
+
+### Request Response
+
+> REST, gRPC, GraphQL
+
+Order service and order processor are very coupled. If one crashes, all falls down.
+
+As synchrounous operations, the data may be inconsistent.
+
+|Event Driven|Request Response|
+|-|-|
+|Flexible Architecture|Coupled services|
+|Decoupled services|Hard integration|
+|More availability|More overload|
+|Less overload|More failure poitns|
