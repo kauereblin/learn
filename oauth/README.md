@@ -86,7 +86,7 @@ Pela aplicação ser compilada, precisa ter um mecanismo de criar credencial por
 
 Aplicações públicas (sem login) compartilham das mesmas credenciais.
 
-![Diagrama para escolher melhor fluxo de autorização](./assets/chooseShart.png)
+![Diagrama para escolher melhor fluxo de autorização](./assets/chooseDiagram.png)
 
 [OAuth 2.0](https://oauth.net/2/)
 [OAuth 2.0 RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)
