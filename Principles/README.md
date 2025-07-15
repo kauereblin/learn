@@ -105,15 +105,15 @@ It's a software development methodology that focus on the behavior of the softwa
 Balance the load of requests between services
 
 #### Pros:
-    - Scalability
-    - Performance
-    - Availability
+  - Scalability
+  - Performance
+  - Availability
 
 #### Main features
-    - Health services check
-    - TLS Termination (encrypt/decrypt data transfer)
-    - DDOs security
-    - Service discovery
+  - Health services check
+  - TLS Termination (encrypt/decrypt data transfer)
+  - DDOs security
+  - Service discovery
 
 It can be applied between services with multiple instances (user/web server, web server/app server, app server/database)
 
@@ -304,4 +304,4 @@ As synchrounous operations, the data may be inconsistent.
 |Flexible Architecture|Coupled services|
 |Decoupled services|Hard integration|
 |More availability|More overload|
-|Less overload|More failure poitns|
+|Less overload|More failure points|
