@@ -1,6 +1,6 @@
 # SOLID
 
-- **[S]ingle Responsibility Principle**: A class/method should have only one responsability.
+- **[S]ingle Responsibility Principle**: A class/method should have only one responsibility.
 
 - **[O]pen/Closed Principle**: A class should be open for extension but closed for modification.
 
@@ -22,7 +22,7 @@ Break the problem into smaller parts and solve them one by one. Don't try to sol
 
 > Don't Repeat Yourself.
 
-*Rule of three*. Reuse and reduce duplicated code. Focus on centralize the business logic. Less code results in better maintainibility.
+*Rule of three*. Reuse and reduce duplicated code. Focus on centralize the business logic. Less code results in better maintainability.
 
 # YAGNI
 
@@ -34,7 +34,7 @@ It's a principle of XP, that suggest to don't create unessential code, avoiding 
 
 > Tell, Don't Ask.
 
-It's a principle that suggest to avoid asking for the state of an object to make a decision. Instead, tell the object what to do.
+It's a principle that suggest avoiding asking for the state of an object to make a decision. Instead, tell the object what to do.
 
 ```
 class Foo {
@@ -114,14 +114,26 @@ Balance the load of requests between services
   - TLS Termination (encrypt/decrypt data transfer)
   - DDOs security
   - Service discovery
+  - Analytics
 
 It can be applied between services with multiple instances (user/web server, web server/app server, app server/database)
 
 # API Gateway
 
-Creates the API routes with authentication, authorization, monitoring.
+Creates the API routes with authentication, authorization, monitoring, traffic management.
+
+Don't invoke the server, creates the routes for the microservices;
 
 Centralizes the business rules.
+
+# Reverse Proxy
+
+Acts as gate for many servers, client only see as one;
+
+- Load Balancer (cloud provider manage all the topics bellow);
+- TLS Termination;
+- Cache;
+- Security;
 
 # Database Features
 
@@ -154,11 +166,16 @@ The CAP theorem states that it is not possible to guarantee all three of the des
 Used on RAM, not on HDs. The random insertion by the hash function may impair data access on the HD. 
 But RAM is expensive and ephemera. For this, WAL was created.
 
+With conflict:
+- Chaining: Linked-list;
+- Open Addressing: The next available;
+- Resizing the Hash Table by a certain threshold: Rehash the existing keys;
+
 ##### WAL (Write Ahead Log)
 
 Create logs for all RAM operations used by the Hash Index, then commit the changes.
 
-> Hash Index don't support Range Queries, because of it's hash function
+> Hash Index don't support **Range Queries**
 
 ## B-Trees
 
@@ -178,25 +195,31 @@ Storage in solid drive (HD/SSD). Most used in SQL;
 
 Storage in both RAM and solid drive. Best for writes and good for reads.
 
+Cassandra, DynamoDB, MongoDB, ScyllaDB.
+
 #### Process
 
-Write data in RAM, save usign WAL.
+Write data in RAM, save using WAL.
 
-During periodic service or full RAM using B-Trees/AVL/Self-balanced tree O(1), the data is written to solid drive in Sorted Strings Tables (SSTables). O(log(N))
+During periodic service or full RAM (MemTable) using B-Trees/AVL/Self-balanced tree, with read O(1), the data is written to solid drive in Sorted Strings Tables (SSTables). Read is O(log(N))
 
-With more data insertions, the number of SSTable increase, to solve this, **Compaction** is used, comparing the most recent data and overwriting in the result SSTable. O(N)
+With more data insertions, the number of SSTable increase, to solve this, **Compaction** is used, comparing the most recent data and overwriting in the result SSTable, merging both. Read is O(N)
+
+#### Bloom Filter
+
+Probabilistic data structure that enables you to check if an element is present in a set using a very small memory space of a fixed size. Improving search in SSTables.
 
 ## Replication
 
 The data can be saved across different geographic regions to reduce the latency.
 
-- Synchronous: The user waits until the data is updated across all databases, prioritizing consistency adding delay to the application;
+- Synchronous: The user waits until the data is updated across all databases, prioritizing consistency adding delay to the application; (CA - Consistency / Availability)
 
-- Asynchronous: The other user can get the non-updated data.
+- Asynchronous: The other user can get the non-updated data. (AP - Availability / Partition Tolerance)
 
 #### Single-Leader Replication
 
-- Dont have write conflicts;
+- Don't have written conflicts;
 - Low throughput (data processed);
 - Single point of failure;
 
@@ -212,7 +235,14 @@ The data can be saved across different geographic regions to reduce the latency.
 - Read with latency;
 - High availability;
 
-Uses quorum to determine the number of databases to interact with.
+Uses **Quorum** to determine the number of databases to interact with.
+
+### Conflicts
+
+Solutions:
+- **LWW - Last Write Wins** (save timestamp for each increment)
+- Write with conflict, user decides;
+- Use **CRDT - Conflict-free Replicated Data Type**
 
 ## Sharding / Data Partitioning
 
@@ -235,11 +265,73 @@ The first record goes to the first node, the second to the second node, and so o
 #### Horizontal & Vertical partitioning
 
 - Horizontal divides the data with hash or range based smaller tables;
-- Vertical divides the columns of the tables creting extensions of the main table.
+- Vertical divides the columns of the tables creating extensions of the main table.
 
 There may be hotspots in some cases.
 
 > Amazon approaches: Local & Global secondary index - DynamoDB.
+
+## SQL ✕ NoSQL
+
+#### SQL
+
+Relational database, table based. Consistency, Security, Backup and Recovery;
+
+Vertical scale;
+
+Multirow transactions;
+
+> [ACID](#acid)
+> [B-trees](#b-trees)
+
+#### NoSQL
+
+Non-structured data, big data. Flexibility, Scalability, Cost efficiency;
+
+Horizontal scale;
+
+Built-in clustering;
+
+Types:
+- Key-values: Games, publicity, IoT;
+- Graphs: Social media, fraud recognition;
+- Documents: Semi-structured, JSON;
+- Search: Indexing, aggregation;
+- Columns: Analytics search;
+
+## Cloud Store / Blob Stores
+
+Stores static *Binary Large OBjects*
+
+- Easy use;
+- Autoscaling;
+- Auto replication;
+
+Solutions: S3, Google Cloud Store, Azure Blob Store.
+
+# DNS (Domain Name System)
+
+Translate domain to IP address
+
+- Browser request to Internet Service Provider (ISP) by **DNS query**;
+- ISP request to DNS infrastructure, that response with a list of IPs;
+- ISP receive the list, send to browser and redirect the browser to the content with HTTP 
+
+**Name servers**: Infrastructure for the DNS, store the domains and IPs;
+**Resource Records**: Table that maps the domains;
+**Caching**: Provide performance for searching;
+**Hierarchy**: Performance for searching, tree-based search;
+
+#### DNS Resolver
+
+- Root-level: manage the subdomains;
+- Top-level domain (TLD): .com, .br, .io, .org;
+- Authoritative: google.com;
+
+#### Search Types
+
+- Iterative: The client (ISP) manage all the DNS queries;
+- Recursive: Most used, more overload, request root many times;
 
 # CDN (Content Delivery Network)
 
@@ -285,9 +377,9 @@ Coupled services, but can be structured as distributed systems.
 
 > RabbitMQ, Kafka
 
-Include a Order **Topic** in the middle of the communication between Order Service and Order Processor. Ensuring that requests are processed with delay if processor crashes, or service crash and there are requests to process in the Topic.
+Include a **Topic** in the middle of the communication between Service and Processor. Ensuring that requests are processed with delay if processor crashes, or service crash and there are requests to process in the Topic.
 
-The data maybe inconsistent, because the operation is assynchronous.
+The data maybe inconsistent, because the operation is asynchronous.
 
 The scalability is better than Request Response because it doesn't need the dependency between services. It's not coupled.
 
@@ -297,7 +389,7 @@ The scalability is better than Request Response because it doesn't need the depe
 
 Order service and order processor are very coupled. If one crashes, all falls down.
 
-As synchrounous operations, the data may be inconsistent.
+As synchronous operations, the data may be inconsistent.
 
 |Event Driven|Request Response|
 |-|-|
