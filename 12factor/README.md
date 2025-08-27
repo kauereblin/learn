@@ -6,7 +6,7 @@ A methodology for building software-as-a-service apps that:
 
 - Have a **clean contract** with the underlying OS, offering **maximum portability** between execution environments;
 
-- Are suitable for **deployment** on cloud plataforms, obviating the need for servers and systems administration;
+- Are suitable for **deployment** on cloud platforms, obviating the need for servers and systems administration;
 
 - **Minimize divergence** between development and production, enabling **continuous deployment** for maximum agility;
 
@@ -18,7 +18,7 @@ A methodology for building software-as-a-service apps that:
 
 A 12FA is tracked in a version control system, with one codebase per app.
 
-Distrubuted systems are composed of many apps, each with its own codebase, which are sometimes deployed together.
+Distributed systems are composed of many apps, each with its own codebase, which are sometimes deployed together.
 
 Sharing the same code in multiple codebases is a violation of the 12FA. Instead, extract the shared code into libraries, and include through *dependencies*.
 
@@ -56,23 +56,23 @@ Save credentials as constants in the code is a violation of 12FA. Config varies 
 
 The 12FA stores config in **environment variables**.
 
-Another aspect of config management is grouping. As the app grows, more batch configs are needed to run the deploy. In 12FA, the env var are granular controls, and agnostic of each other, never grouped.
+Another aspect of config management is grouping. As the app grows, more batch configs are needed to run the deployment. In 12FA, the env var are granular controls, and agnostic of each other, never grouped.
 
 ## IV. Backing services
 
 It's any service the app consume over network. (datasore, messaging/queueing systems, SMTP services, caching systems).
 
-In addition of locally-managed services, the app also gave services provided and managed by third parties. The 12FA make **no distinction between local or third party services**. The app should be able to swap out a local SQL database to an online managed without any changes in code, only the config needs change.
+In addition, of locally-managed services, the app also gave services provided and managed by third parties. The 12FA make **no distinction between local or third party services**. The app should be able to swap out a local SQL database to an online managed without any changes in code, only the config needs change.
 
 Each backing service is a resource. Resources can be attached to and detached from deploys.
 
 ## V. Build, Release, Run
 
-Transform the codebase into a deploy through three stages:
+Transform the codebase into a deployment through three stages:
 
 - *Build*: Converts a code repo into an executable bundle, known as build. In this stage, vendors dependencies are fetched and compiles binaries and assets.
 
-- *Release*: Combines the build with the deploy's current config.
+- *Release*: Combines the build with the deployment's current config.
 
 - *Run* (runtime): Runs the app in the execution env, by launching some set of the app's [processes](#vi-processes)
 
@@ -104,7 +104,7 @@ Processes in the twelve-factor app take strong cues from the **unix process mode
 
 > The process model truly shines when it comes time to scale out. The share-nothing, horizontally partitionable nature of twelve-factor app processes means that adding more concurrency is a simple and reliable operation.
 
-12FA processes should never write PID files. Instead, rely on the OS process manager to manage output streams, respond to chashed processes and handle user-initiated restarts and shutdowns.
+12FA processes should never write PID files. Instead, rely on the OS process manager to manage output streams, respond to cashed processes and handle user-initiated restarts and shutdowns.
 
 ## IX. Disposability
 
@@ -116,9 +116,9 @@ For a worker process, shutdown is achieved by returning the current job to the w
 
 In this model, all jobs are **reentrant** or make the operation **idempotent**.
 
-Processes should be robust against sudden death. Recommended to use a queueing backend, that return jobs to the queue.
+Processes should be robust against sudden death. Recommended using a queueing backend, that return jobs to the queue.
 
-## Dev/prod parity
+## X. Dev/prod parity
 
 Development and production areas can manifest gaps, such as:
 
@@ -128,11 +128,11 @@ Development and production areas can manifest gaps, such as:
 
 - Tools: Developer may use different tools than those in the production env.
 
-The 12FA is designed to shorten the gap between this areas:
+The 12FA is designed to shorten the gap between these areas:
 
 - Time: When finished its work, the code may be deployed hours or minutes later;
 
-- Personnel: The developer are closely involved in deploying and watching code's behavior in production
+- Personnel: The developer is closely involved in deploying and watching code's behavior in production
 
 - Tools: Keep development and production as similar as possible.
 
@@ -140,11 +140,11 @@ The 12FA is designed to shorten the gap between this areas:
 
 Developers sometimes find great appeal in using lightweight backing service in their local env, different from robust and complex in production. The 12FA resists this urge of divergent tools between dev and prod.
 
-Some errors are created from this disparity, causing inconvenient delay in continous delivery.
+Some errors are created from this disparity, causing inconvenient delay in continuous delivery.
 
 Adapters to different backing services are still useful. But all deploys of the app should be using the same type and version of each.
 
-## Logs
+## XI. Logs
 
 Logs provide visibility into the behavior of a running app.
 
@@ -152,7 +152,7 @@ Logs are the stream of time-ordered events collected of all running processes an
 
 12FA never concerns with routing or storage its output stream. Instead, each process writes its event stream.
 
-In development, these logs can be seen in terminal. In production each process stram will be captured by the execution env, and routed to one or more final destinations. These archival destinations are managed by the execution env.
+In development, these logs can be seen in terminal. In production each process stream will be captured by the execution env, and routed to one or more final destinations. These archival destinations are managed by the execution env.
 
 The logs can be used to:
 
@@ -162,9 +162,9 @@ The logs can be used to:
 
 - Active alerting according to user-defined heuristic (ex: quantity of errors per minute).
 
-## Admin processes
+## XII. Admin processes
 
-Many time the developer need to run one-off administrative or maintenance tasks for the app, such as:
+Many times the developer need to run one-off administrative or maintenance tasks for the app, such as:
 
 - Running database migrations;
 
