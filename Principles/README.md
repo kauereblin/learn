@@ -10,6 +10,10 @@
 
 - **[D]ependency Inversion Principle**: High-level should not depend on low-level. Both should depend on abstractions. Abstractions should not depend on details. Details should depend on abstractions. Depend on abstraction, not on concretions.
 
+# SOC (Separation of Concerns)
+
+Design a code base into distinct sections, each addressing a single concern.
+
 # KISS
 
 > Keep It Simple, Stupid.
