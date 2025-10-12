@@ -37,3 +37,15 @@ The AWS is responsible for the security of the cloud.
 The customer is responsible for the security in the cloud.
 
 ![Shared Responsibility Model](./assets/M01_L5_SRM_Intro.png "Shared Responsibility Model")
+
+- **Fully Managed Services**: Customer are only responsible for data management, access controls, and proper service configuration;
+
+![Shared Responsibility Model - Fully Managed Services](./assets/M01_FullyManaged.png "Shared Responsibility Model")
+
+- **Managed Services**: AWS manages the underlying storage infrastructure, hardware redundancy, and volume replication;
+
+![Shared Responsibility Model - Managed Services](./assets/M01_Managed.png "Shared Responsibility Model")
+
+- **Unmanaged Services**: Customers take full responsibility for data management, backup/recovery, encryption, performance optimization, and durability. AWS only handle the hardware and network infrastructure.
+
+![Shared Responsibility Model - Unmanaged Services](./assets/M01_Unmanaged.png "Shared Responsibility Model")

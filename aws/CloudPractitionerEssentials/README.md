@@ -7,3 +7,4 @@ The current directory is modularized based on AWS skill builder course.
 - [Module 3 - Exploring Compute Services](./module3.md);
 - [Module 4 - Going Global](./module4.md);
 - [Module 5 - Networking](./module5.md);
+- [Module 6 - Storage](./module6.md);
