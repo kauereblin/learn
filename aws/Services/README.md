@@ -93,7 +93,7 @@ Database NoSQL;
 
 ## EMR (Elastic MapReduce)
 
-Managed cluster platform to run big data frameworks.
+Managed cluster platform to run big data frameworks (Apache Spark, Apache Hadoop, Apache Hive).
 Process and analyze vast amounts of data.
 
 ✅ Data lakes, batch jobs, process big data;
