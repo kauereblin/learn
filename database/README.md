@@ -185,3 +185,71 @@ Faster than database.
 - Least Recently Used (LRU);
 - First In First Out (FIFO);
 - Least Frequently Used (LFU);
+
+## Lock types
+
+### By Level (Granularity)
+
+Locks can be applied at different levels of hierarchy:
+- Database;
+- Table;
+- Page (fixed-size block of rows);
+- Row (Online Transaction Processing - OLTP Systems);
+- Column (rare);
+
+### By Mode
+
+Type of Access Control:
+- Shared (S): Read-only, multi-read;
+- Exclusive (X): Prevent read or writing;
+- Update (U): Avoid deadlocks when upgrading to *Exclusive*;
+- Intent (IS / IX / SIX): Indicate intention to lock at a lower level;
+- Schema (SCH-S / SCH-M): Protects schema changes (DLL);
+- Bulk Update: (Used for bulk inserts to improve performance);
+
+### By Duration
+
+- Transaction: Held until transaction commits or rolls back;
+- Statement: Released immediately after the SQL statement executes;
+- Session: Held as long as the session is active;
+
+### By Behavior
+
+- Pessimistic: Locks resources before access to avoid conflicts;
+- Optimistic: Doesn't lock, checks if data changed before commit (version/timestamp);
+
+### By Purpose | Use Case
+
+- Read: Locks while reading;
+- Write: Prevents others from reading or writing;
+- Intent: Marks intent to acquire lower-level locks;
+- Gap / Predicate / Range: Locks a range of key values (serializable isolation);
+- Key-Range: Prevents phantom reads locking index ranges;
+- Next-Key (Row + Gap): Locks the index record and the gap immediately before it;
+- Deadlock Detection: Track dependencies;
+
+#### By Application
+
+- Advisory: Application code decides when to acquire/release;
+- Application: Similar to *advisory*. Offered as built-in service by the DB or middleware;
+
+### Multi-Version Concurrency Control (MVCC)
+
+DB creates versions of rows. Writes work on a new version, and readers see a snapshot from before the transaction;
+
+### Protocols and related rules
+
+#### Two-Phase locking (2PL)
+
+Guarantees serializability. With two phases:
+- Growing: Transaction can acquire locks, but not release any;
+- Shrinking: Once a lock is released, no new locks can be acquired;
+
+## Transaction Isolation
+
+| Isolation Level      | Prevents                    | Allows                         |
+| -------------------- | --------------------------- | ------------------------------ |
+| **Read Uncommitted** | Nothing                     | Dirty reads                    |
+| **Read Committed**   | Dirty reads                 | Non-repeatable reads, phantoms |
+| **Repeatable Read**  | Dirty, non-repeatable reads | Phantoms                       |
+| **Serializable**     | All above                   | None                           |
