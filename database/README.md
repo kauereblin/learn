@@ -205,7 +205,7 @@ Type of Access Control:
 - Update (U): Avoid deadlocks when upgrading to *Exclusive*;
 - Intent (IS / IX / SIX): Indicate intention to lock at a lower level;
 - Schema (SCH-S / SCH-M): Protects schema changes (DLL);
-- Bulk Update: (Used for bulk inserts to improve performance);
+- Bulk Update: Used for bulk inserts to improve performance;
 
 ### By Duration
 
@@ -228,7 +228,7 @@ Type of Access Control:
 - Next-Key (Row + Gap): Locks the index record and the gap immediately before it;
 - Deadlock Detection: Track dependencies;
 
-#### By Application
+### By Application
 
 - Advisory: Application code decides when to acquire/release;
 - Application: Similar to *advisory*. Offered as built-in service by the DB or middleware;
