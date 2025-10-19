@@ -157,3 +157,28 @@ As synchronous operations, the data may be inconsistent.
 |Decoupled services|Hard integration|
 |More availability|More overload|
 |Less overload|More failure points|
+
+# Stateful ✕ Stateless
+
+State is the information about previous interactions.
+
+### Stateful
+
+It keeps track of the state between requests.
+
+Each client has a session that the server remembers.
+
+The server stores data like:
+- Login status;
+- User preferences;
+- Ongoing transactions;
+
+Requests depend on previous ones. If some server is down, the logged user lost all their progress.
+
+### Stateless
+
+The application treats each request as independent.
+
+Every request contains all the info needed to process it.
+
+**More scalable**.
