@@ -30,7 +30,7 @@ It can be applied between services with multiple instances (user/web server, web
 ## Requirements
 
 - Specify Rate Limits: Establish boundaries to ensure fair usage, prevents abuse, and protect system resources from being overwhelmed;
-- Configurability and Flexibility: Adapt to changing requirements and handle diverse traffic patterns;
+- Configurability and Flexibility: Adapt to changing requirements and handle diverse traffic patterns (Per endpoint | Per User/IP);
 - Low latency and High performance: Process requests quickly;
 
 ## Implementations
@@ -86,6 +86,98 @@ Flexible policies|Potential bottlenecks
 - More complex to implement and may require additional storage for timestamps;
 
 > All denied requests can be added to a retry queue.
+
+# CORS (Cross-Origin Resource Sharing)
+
+### Origin
+
+Defined by three things:
+- Protocol: `https://`
+- Domain: `api.example.com`
+- Port: `:3000`
+
+### Same-Origin Policy (SOP)
+
+> A web page can only make requests to the same origin it was loaded from.
+
+CORS is a system that allows a server to be reached by another.
+
+It works through HTTP headers that the server sends in its response.
+
+```
+Access-Control-Allow-Origin: https://app.com
+```
+
+For development, all origin can access, unsafe for production:
+```
+Access-Control-Allow-Origin: *
+```
+
+#### How it works:
+
+- Simple Request: `GET` / `POST` with `application/x-www-form-urlencoded`, the browser sends it directly. Checks the response for *ACAO*, if it's missing the browser blocks the response;
+- **Preflight** Request: request with params (headers, body) or `PUT` / `DELETE` methods, the browser sends an OPTIONS request first (**preflight**) checking the permission to complete the request. The server must respond with headers like:
+  - `Access-Control-Allow-Origin: https://app.com`
+  - `Access-Control-Allow-Methods: GET, POST, PUT, DELETE`
+  - `Access-Control-Allow-Headers: Content-Type, Authorization`
+
+#### Common CORS Headers
+
+| Header                             | Purpose                                     |
+| ---------------------------------- | ------------------------------------------- |
+| `Access-Control-Allow-Origin`      | Which origins can access the resource       |
+| `Access-Control-Allow-Methods`     | Which HTTP methods are allowed              |
+| `Access-Control-Allow-Headers`     | Which custom headers can be used            |
+| `Access-Control-Allow-Credentials` | Whether cookies or auth headers are allowed |
+| `Access-Control-Max-Age`           | How long the preflight result can be cached |
+
+## CSRF (Cross-Site Request Forgery)
+
+Is an attack where a malicious site tricks a logged-in user's browser into sending unauthorized requests to another site because the browser automatically includes cookies.
+
+- Cause: Browser send authentication cookies automatically on cross-site requests.
+- **Goal: Make the victim's browser perform actions as if they were the legitimate user**
+
+#### Protections:
+
+- *CSRF Token*: unique, secret value that must be sent with each sensitive request;
+- *SameSite Cookie*: tells the browser not to send cookies on cross-site requests;
+- *Double Submit Cookie*: compares a token in both cookie and request.
+
+> CSRF prevents unwanted actions.
+
+## XSS (Cross-Site Scripting)
+
+Web security vulnerability that allows attackers to inject malicious scripts into web pages by other users.
+
+The injected code can:
+- Steal cookies, session tokens;
+- Impersonate users;
+- Deface websites;
+- Redirect users to malicious sites;
+- Perform actions on behalf of the victim.
+
+#### How it works
+
+If the input isn't sanitized the attacker can include HTML/JavaScript code. Then when another user views the page, that malicious code executes in their browser.
+
+#### Types
+
+| Type              | Where Code Lives | Triggered When                 |
+| ----------------- | ---------------- | ------------------------------ |
+| **Stored XSS**    | Server/database  | Page loads data from storage   |
+| **Reflected XSS** | URL/request      | User visits crafted link       |
+| **DOM-Based XSS** | Client/browser   | Client-side JS manipulates DOM |
+
+### How to Prevent XSS
+
+| Layer                  | Defense                                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| **Input Handling**     | Validate and sanitize user inputs. Use libraries like DOMPurify for HTML.                      |
+| **Output Encoding**    | Escape dynamic data before rendering in HTML, JavaScript, or URLs.                             |
+| **HTTP Headers**       | Use security headers: `Content-Security-Policy (CSP)`, `X-XSS-Protection`, `HttpOnly` cookies. |
+| **Framework Defenses** | Use frameworks that automatically escape data (React, Angular, Django, ASP.NET Razor).         |
+| **Avoid `eval()`**     | Never use functions like `eval()`, `innerHTML`, or `document.write()` with untrusted input.    |
 
 # API Gateway
 
@@ -150,6 +242,58 @@ Save static data from live servers to give more performance in requests.
 # Search Engine Optimization (SEO)
 
 
+# Common API styles
+
+[gRPC](../protocols/README.md#generic-remote-procedure-calls-grpc)
+
+## Representational State Transfer (REST)
+
+It's an architectural style for designing networked applications.
+
+It uses [HTTP](#http-request-parameters) as communication protocol.
+
+Based on *resources* identified by [URLs](#uniform-resource-locators-url).
+
+Each *resource* is represented by a [URI](#uniform-resource-identifier-uri).
+
+Uses **Hypermedia as the Engine of Application State (HATEOAS)** that the RESTful API can provide links to guide clients dynamically.
+
+#### Concepts
+
+- Client-Server structured;
+- Each request is [stateless](../Principles/README.md#stateless).
+- Cachable;
+- Uniform Interface, contract don't change;
+- Layered System ([Load Balancer](#load-balancer), proxies, [Gateways](#api-gateway));
+
+#### Authentication and Security
+
+- API keys;
+- JWT (JSON Web Token);
+- [OAuth 2.0](../oauth/README.md);
+- [TLS](../protocols/README.md#presentation-layer) encryption
+
+## GraphQL
+
+Is a query language and runtime for APIs.
+
+It provides a more flexible and efficient alternative to REST. The client ask for exactly the data they need.
+
+Usually there's a single endpoint.
+
+Resolve over-fetching or under-fetching. Solve **N+1 selects problem**.
+
+GraphQL server acts as a *gateway*, orchestrating multiple data sources into one unified response.
+
+### Components
+
+- Schema: Is the contract, defines the *types*, *fields*, and *relationships* available in the API;
+- Queries: Read operation;
+- Mutations: Write operation;
+- Subscriptions: Real-time operations via [WebSockets](../protocols/README.md#websockets);
+- Resolvers: Are functions that tell how to fetch the data for each field;
+  - Make data-source agnostic: pulling from databases, other APIs, files, services, or memory;
+- Single endpoint;
 
 # HTTP Request Parameters
 
@@ -367,5 +511,3 @@ Pros✅|Cons❗
 More expensive than query params | Poor browser and caching support
 
 ---
-
-# REST | gRPC | GraphQL
