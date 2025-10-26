@@ -26,17 +26,17 @@ Delivers and manages all the hardware and software resources to develop and depl
 
 Customers are responsible to write the code and manage their data and apps, but the environment to build and deploy containerized app is managed by cloud service provider.
 
-### Platform as a Service (IaaS)
+### Platform as a Service (PaaS)
 
 Delivers and manages all the hardware and software resources.
 
 Customers are responsible to write the code and manage their data and applications, but the environment to build and deploy apps is managed by the cloud service provider, needing the scaling configuration.
 
-### Function as a Service (IaaS)
+### Function as a Service (FaaS)
 
 Customers are responsible to write the code that performs a specific task and manage their data and apps without worry with scaling.
 
-### Software as a Service (IaaS)
+### Software as a Service (SaaS)
 
 Delivers an entire cloud-based application that customers can access and use. **SaaS** products are completely managed by the service provider.
 
